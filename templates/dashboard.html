@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — EasyLoan Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  font-family:'Outfit',sans-serif;
+  background:#f0f4f8; color:#1e293b;
+  min-height:100vh; overflow-x:hidden;
+}
+
+/* ===== BG ===== */
+.bg-mesh{
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 500px 500px at 10% 20%, rgba(99,102,241,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 400px at 85% 75%, rgba(6,182,212,0.05) 0%, transparent 70%);
+}
+
+/* ===== NAVBAR ===== */
+.navbar{
+  position:sticky; top:0; z-index:1000;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 36px;
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(99,102,241,0.06);
+  box-shadow:0 1px 15px rgba(99,102,241,0.03);
+  animation:slideDown 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes slideDown{ 0%{transform:translateY(-100%);opacity:0;} 100%{transform:translateY(0);opacity:1;} }
+.nav-brand{
+  font-family:'Inter',sans-serif; font-size:20px; font-weight:800;
+  background:linear-gradient(135deg,#4f46e5,#06b6d4);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.nav-links{ display:flex; gap:2px; align-items:center; flex-wrap:wrap; }
+.nav-links a{
+  color:#64748b; text-decoration:none;
+  font-size:13px; font-weight:500; padding:8px 14px;
+  border-radius:10px; transition:all 0.3s cubic-bezier(0.4,0,0.2,1);
+  position:relative;
+}
+.nav-links a::after{
+  content:''; position:absolute; bottom:4px; left:50%; width:0; height:2px;
+  background:linear-gradient(90deg,#4f46e5,#06b6d4);
+  border-radius:1px; transition:all 0.3s ease;
+  transform:translateX(-50%);
+}
+.nav-links a:hover{ color:#4f46e5; }
+.nav-links a:hover::after{ width:60%; }
+.nav-links a.active{ color:#4f46e5; font-weight:600; }
+.nav-links a.active::after{ width:60%; }
+.nav-links a.logout{
+  color:#ef4444; border:1px solid rgba(239,68,68,0.12);
+}
+.nav-links a.logout::after{ display:none; }
+.nav-links a.logout:hover{ background:rgba(239,68,68,0.06); transform:scale(1.03); }
+
+/* ===== MAIN ===== */
+.main{ position:relative; z-index:1; padding:36px 36px 60px; max-width:1100px; margin:auto; }
+
+/* ===== WELCOME — Typing effect ===== */
+.welcome{
+  margin-bottom:36px;
+  opacity:0; transform:translateY(25px);
+  animation:fadeSlide 0.7s cubic-bezier(0.16,1,0.3,1) 0.3s forwards;
+}
+@keyframes fadeSlide{ to{opacity:1;transform:translateY(0);} }
+.welcome h1{
+  font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:#0f172a;
+  margin-bottom:6px;
+}
+.welcome h1 span{
+  background:linear-gradient(135deg,#4f46e5,#06b6d4);
+  background-size:200% 200%;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  animation:gradientShift 3s ease infinite;
+}
+@keyframes gradientShift{ 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+.welcome p{ color:#94a3b8; font-size:15px; }
+
+/* ===== PROFILE CARD ===== */
+.profile-card{
+  background:rgba(255,255,255,0.75);
+  border:1px solid rgba(99,102,241,0.06);
+  border-radius:24px; padding:36px;
+  backdrop-filter:blur(16px);
+  display:flex; gap:36px; align-items:center;
+  box-shadow:0 4px 30px rgba(99,102,241,0.04);
+  opacity:0; transform:translateY(30px);
+  animation:fadeSlide 0.8s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
+  transition:all 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.profile-card:hover{
+  border-color:rgba(99,102,241,0.15);
+  box-shadow:0 20px 60px rgba(99,102,241,0.08);
+  transform:translateY(-4px) !important;
+}
+
+.avatar-section{ text-align:center; flex-shrink:0; }
+.avatar-wrapper{
+  width:130px; height:130px; border-radius:50%;
+  padding:4px;
+  background:linear-gradient(135deg,#4f46e5,#06b6d4,#8b5cf6);
+  background-size:200% 200%;
+  animation:avatarRing 4s ease-in-out infinite;
+  margin-bottom:12px;
+  transition:transform 0.4s ease;
+}
+.avatar-wrapper:hover{ transform:scale(1.06) rotate(3deg); }
+@keyframes avatarRing{
+  0%,100%{ background-position:0% 50%; box-shadow:0 0 20px rgba(99,102,241,0.2); }
+  50%{ background-position:100% 50%; box-shadow:0 0 30px rgba(6,182,212,0.25); }
+}
+.avatar-wrapper img{
+  width:100%; height:100%; border-radius:50%;
+  object-fit:cover;
+  border:3px solid #fff;
+}
+.avatar-name{
+  font-family:'Inter',sans-serif; font-size:18px; font-weight:700; color:#0f172a;
+}
+
+.info-grid{
+  flex:1; display:grid; grid-template-columns:1fr 1fr; gap:14px;
+}
+.info-item{
+  background:rgba(248,250,252,0.7);
+  border:1px solid #e2e8f0;
+  border-radius:14px; padding:16px 20px;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  cursor:default;
+}
+.info-item:hover{
+  border-color:rgba(99,102,241,0.15);
+  background:#fff;
+  box-shadow:0 8px 25px rgba(99,102,241,0.06);
+  transform:translateY(-3px);
+}
+.info-label{
+  font-size:11px; font-weight:600; color:#94a3b8;
+  text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;
+}
+.info-value{
+  font-size:15px; font-weight:500; color:#0f172a;
+}
+
+/* ===== QUICK ACTIONS ===== */
+.quick-actions{
+  margin-top:36px;
+  opacity:0; transform:translateY(30px);
+  animation:fadeSlide 0.8s cubic-bezier(0.16,1,0.3,1) 0.7s forwards;
+}
+.quick-actions h3{
+  font-family:'Inter',sans-serif; font-size:18px; font-weight:700;
+  color:#64748b; margin-bottom:20px;
+}
+.actions-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px;
+}
+.action-card{
+  display:flex; align-items:center; gap:14px;
+  background:rgba(255,255,255,0.75);
+  border:1px solid rgba(99,102,241,0.05);
+  border-radius:16px; padding:22px;
+  text-decoration:none; color:#0f172a;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+  box-shadow:0 2px 10px rgba(99,102,241,0.02);
+  position:relative; overflow:hidden;
+}
+.action-card::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(99,102,241,0.03),rgba(6,182,212,0.02));
+  opacity:0; transition:opacity 0.4s;
+}
+.action-card:hover::before{ opacity:1; }
+.action-card:hover{
+  transform:translateY(-6px) scale(1.02);
+  border-color:rgba(99,102,241,0.15);
+  box-shadow:0 16px 40px rgba(99,102,241,0.08);
+}
+.action-card:active{ transform:translateY(-2px) scale(0.99); }
+.action-icon{
+  width:48px; height:48px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.action-card:hover .action-icon{ transform:scale(1.15) rotate(-8deg); }
+.action-icon.purple{ background:linear-gradient(135deg,rgba(99,102,241,0.1),rgba(139,92,246,0.06)); }
+.action-icon.teal{ background:linear-gradient(135deg,rgba(6,182,212,0.1),rgba(34,211,238,0.06)); }
+.action-icon.gold{ background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(251,191,36,0.06)); }
+.action-icon.pink{ background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(251,113,133,0.05)); }
+.action-text .action-title{ font-weight:600; font-size:15px; color:#0f172a; position:relative; z-index:1; }
+.action-text .action-desc{ font-size:12px; color:#94a3b8; margin-top:2px; position:relative; z-index:1; }
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .navbar{ padding:14px 20px; }
+  .nav-links a{ font-size:12px; padding:6px 10px; }
+  .main{ padding:24px 20px; }
+  .profile-card{ flex-direction:column; text-align:center; }
+  .info-grid{ grid-template-columns:1fr; }
+  .actions-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="nav-brand">EasyLoan</div>
+  <div class="nav-links">
+    <a href="/dashboard/" class="active">Dashboard</a>
+    <a href="/apply-loan/">Apply Loan</a>
+    <a href="/loan-status/">Loan Status</a>
+    <a href="/emi-calculator/">EMI Calculator</a>
+    <a href="/emi-payment/">EMI Payment</a>
+    <a href="/emi-status/">EMI Status</a>
+    <a href="/payment-history/">History</a>
+    <a href="/logout/" class="logout">Logout</a>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="welcome">
+    <h1>Welcome back, <span>{{user.full_name}}</span> 👋</h1>
+    <p>Here's a quick overview of your account</p>
+  </div>
+
+  <div class="profile-card">
+    <div class="avatar-section">
+      <div class="avatar-wrapper">
+        <img src="{{user.profile_image.url}}" alt="Profile Image">
+      </div>
+      <div class="avatar-name">{{user.full_name}}</div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">Email</div><div class="info-value">{{user.email}}</div></div>
+      <div class="info-item"><div class="info-label">Phone</div><div class="info-value">{{user.phone}}</div></div>
+      <div class="info-item"><div class="info-label">City</div><div class="info-value">{{user.city}}</div></div>
+      <div class="info-item"><div class="info-label">Member Since</div><div class="info-value">{{user.created_at|date:"d M Y"}}</div></div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h3>Quick Actions</h3>
+    <div class="actions-grid">
+      <a href="/apply-loan/" class="action-card">
+        <div class="action-icon purple">📝</div>
+        <div class="action-text">
+          <div class="action-title">Apply for Loan</div>
+          <div class="action-desc">Submit a new loan application</div>
+        </div>
+      </a>
+      <a href="/loan-status/" class="action-card">
+        <div class="action-icon teal">📊</div>
+        <div class="action-text">
+          <div class="action-title">Loan Status</div>
+          <div class="action-desc">Track your applications</div>
+        </div>
+      </a>
+      <a href="/emi-payment/" class="action-card">
+        <div class="action-icon gold">💰</div>
+        <div class="action-text">
+          <div class="action-title">Pay EMI</div>
+          <div class="action-desc">Make your monthly payment</div>
+        </div>
+      </a>
+      <a href="/emi-calculator/" class="action-card">
+        <div class="action-icon pink">🧮</div>
+        <div class="action-text">
+          <div class="action-title">EMI Calculator</div>
+          <div class="action-desc">Plan your loan repayment</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

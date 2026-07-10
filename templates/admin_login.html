@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login — EasyLoan Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  font-family:'Outfit',sans-serif;
+  background:linear-gradient(135deg,#fef3c7 0%,#fce7f3 30%,#eef2ff 70%,#e0f2fe 100%);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden;
+}
+.bg-shapes{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.shape{ position:absolute; border-radius:50%; opacity:0.1; animation:shapeFloat 10s ease-in-out infinite alternate; }
+.shape-1{ width:400px; height:400px; background:linear-gradient(135deg,#f59e0b,#f97316); top:-12%; left:5%; animation-duration:12s; }
+.shape-2{ width:350px; height:350px; background:linear-gradient(135deg,#6366f1,#818cf8); bottom:-10%; right:0%; animation-duration:14s; animation-delay:2s; }
+@keyframes shapeFloat{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(40px,-25px) scale(1.1);} }
+
+.login-card{
+  position:relative; z-index:1; width:420px; max-width:92vw;
+  background:rgba(255,255,255,0.75); border:1px solid rgba(245,158,11,0.12);
+  border-radius:24px; padding:48px 40px;
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  box-shadow:0 8px 40px rgba(245,158,11,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  animation:cardIn 0.8s ease-out;
+}
+@keyframes cardIn{ 0%{opacity:0;transform:translateY(40px) scale(0.96);} 100%{opacity:1;transform:translateY(0) scale(1);} }
+
+.brand{ text-align:center; margin-bottom:36px; }
+.brand-icon{
+  width:56px; height:56px; border-radius:16px;
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:26px; margin-bottom:16px;
+  box-shadow:0 8px 25px rgba(245,158,11,0.25);
+}
+.brand h2{ font-family:'Inter',sans-serif; font-size:26px; font-weight:800; color:#0f172a; margin-bottom:6px; }
+.brand p{ font-size:14px; color:#94a3b8; }
+
+.form-group{ margin-bottom:20px; }
+.form-group label{
+  display:block; font-size:13px; font-weight:600;
+  color:#64748b; margin-bottom:8px;
+  text-transform:uppercase; letter-spacing:0.5px;
+}
+.form-group input{
+  width:100%; padding:14px 18px;
+  background:rgba(255,255,255,0.8); border:1px solid #e2e8f0;
+  border-radius:12px; color:#1e293b; font-size:15px; font-family:'Outfit',sans-serif;
+  outline:none; transition:all 0.3s ease;
+}
+.form-group input::placeholder{ color:#94a3b8; }
+.form-group input:focus{
+  border-color:#f59e0b; box-shadow:0 0 0 3px rgba(245,158,11,0.12); background:#fff;
+}
+
+.btn-login{
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+  border:none; border-radius:12px;
+  color:#fff; font-size:16px; font-weight:700;
+  font-family:'Outfit',sans-serif;
+  cursor:pointer; transition:all 0.4s ease;
+  position:relative; overflow:hidden; margin-top:8px;
+  box-shadow:0 4px 15px rgba(245,158,11,0.3);
+}
+.btn-login:hover{ transform:translateY(-2px); box-shadow:0 10px 30px rgba(245,158,11,0.4); }
+.btn-login::after{
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+  animation:shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer{ 0%{left:-100%;} 50%{left:100%;} 100%{left:100%;} }
+
+.card-footer{ text-align:center; margin-top:28px; font-size:14px; color:#94a3b8; }
+.card-footer a{ color:#f59e0b; text-decoration:none; font-weight:600; }
+</style>
+</head>
+<body>
+<div class="bg-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
+
+<div class="login-card">
+  <div class="brand">
+    <div class="brand-icon">🛡️</div>
+    <h2>Admin Portal</h2>
+    <p>Authorized access only</p>
+  </div>
+
+  <form method="POST" id="admin-login-form">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="admin-username">Username</label>
+      <input type="text" id="admin-username" name="username" placeholder="Enter admin username" required>
+    </div>
+    <div class="form-group">
+      <label for="admin-password">Password</label>
+      <input type="password" id="admin-password" name="password" placeholder="Enter admin password" required>
+    </div>
+    <button type="submit" class="btn-login" id="btn-admin-login">Sign In →</button>
+  </form>
+
+  <div class="card-footer">
+    <a href="/">← Back to Home</a>
+  </div>
+</div>
+</body>
+</html>

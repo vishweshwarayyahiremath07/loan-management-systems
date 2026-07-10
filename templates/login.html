@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — EasyLoan Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{
+  font-family:'Outfit',sans-serif;
+  background:linear-gradient(135deg,#eef2ff 0%,#e0f2fe 50%,#f0f4f8 100%);
+  min-height:100vh;
+  display:flex; justify-content:center; align-items:center;
+  overflow:hidden;
+}
+
+/* ===== ANIMATED BG ===== */
+.bg-anim{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.bg-circle{
+  position:absolute; border-radius:50%;
+  opacity:0.08;
+  animation: circleOrbit ease-in-out infinite alternate;
+}
+.bg-circle:nth-child(1){ width:400px; height:400px; background:linear-gradient(135deg,#6366f1,#818cf8); top:-10%; right:0%; animation-duration:14s; }
+.bg-circle:nth-child(2){ width:300px; height:300px; background:linear-gradient(135deg,#06b6d4,#22d3ee); bottom:-8%; left:-5%; animation-duration:18s; animation-delay:2s; }
+.bg-circle:nth-child(3){ width:200px; height:200px; background:linear-gradient(135deg,#a78bfa,#c4b5fd); top:50%; left:60%; animation-duration:12s; animation-delay:4s; }
+@keyframes circleOrbit{
+  0%{ transform:translate(0,0) scale(1) rotate(0deg); }
+  100%{ transform:translate(40px,-30px) scale(1.15) rotate(15deg); }
+}
+
+/* ===== LOGIN CARD ===== */
+.login-card{
+  position:relative; z-index:1;
+  width:440px; max-width:92vw;
+  background:rgba(255,255,255,0.72);
+  border:1px solid rgba(99,102,241,0.1);
+  border-radius:28px; padding:50px 42px;
+  backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+  box-shadow:0 8px 50px rgba(99,102,241,0.08), 0 1px 3px rgba(0,0,0,0.03);
+  opacity:0; transform:translateY(50px) scale(0.95);
+  animation:cardReveal 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+}
+@keyframes cardReveal{
+  to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* Decorative line */
+.login-card::before{
+  content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:60px; height:4px; border-radius:2px;
+  background:linear-gradient(90deg,#4f46e5,#06b6d4);
+}
+
+/* ===== BRAND ===== */
+.brand{
+  text-align:center; margin-bottom:36px;
+  opacity:0; transform:translateY(20px);
+  animation:itemFade 0.6s ease 0.5s forwards;
+}
+@keyframes itemFade{ to{ opacity:1; transform:translateY(0); } }
+.brand-icon{
+  width:60px; height:60px; border-radius:18px;
+  background:linear-gradient(135deg,#4f46e5,#6366f1);
+  display:inline-flex; align-items:center; justify-content:center;
+  font-size:28px; margin-bottom:16px;
+  box-shadow:0 8px 30px rgba(79,70,229,0.25);
+  transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.brand-icon:hover{ transform:rotate(-10deg) scale(1.1); }
+.brand h2{
+  font-family:'Inter',sans-serif;
+  font-size:26px; font-weight:800; color:#0f172a;
+  margin-bottom:6px;
+}
+.brand p{ font-size:14px; color:#94a3b8; }
+
+/* ===== FORM ===== */
+.form-group{
+  margin-bottom:22px; position:relative;
+  opacity:0; transform:translateY(20px);
+  animation:itemFade 0.6s ease forwards;
+}
+.form-group:nth-child(2){ animation-delay:0.6s; }
+.form-group:nth-child(3){ animation-delay:0.7s; }
+.form-group label{
+  display:block; font-size:13px; font-weight:600;
+  color:#64748b; margin-bottom:8px;
+  text-transform:uppercase; letter-spacing:0.5px;
+  transition:color 0.3s;
+}
+.form-group:focus-within label{ color:#4f46e5; }
+.form-group input{
+  width:100%; padding:14px 18px;
+  background:rgba(255,255,255,0.7);
+  border:2px solid #e2e8f0;
+  border-radius:12px; color:#1e293b;
+  font-size:15px; font-family:'Outfit',sans-serif;
+  outline:none;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.form-group input::placeholder{ color:#94a3b8; }
+.form-group input:focus{
+  border-color:#6366f1;
+  box-shadow:0 0 0 4px rgba(99,102,241,0.1), 0 4px 15px rgba(99,102,241,0.06);
+  background:#fff;
+  transform:translateY(-1px);
+}
+/* Input icon animation */
+.input-icon{
+  position:absolute; right:16px; top:38px;
+  font-size:18px; opacity:0.3;
+  transition:all 0.3s ease;
+}
+.form-group:focus-within .input-icon{ opacity:0.7; transform:scale(1.15); }
+
+/* ===== BUTTON ===== */
+.btn-login{
+  width:100%; padding:16px;
+  background:linear-gradient(135deg,#4f46e5,#6366f1);
+  border:none; border-radius:14px;
+  color:#fff; font-size:16px; font-weight:700;
+  font-family:'Outfit',sans-serif;
+  cursor:pointer;
+  position:relative; overflow:hidden;
+  margin-top:10px;
+  box-shadow:0 4px 20px rgba(79,70,229,0.3);
+  opacity:0; transform:translateY(20px);
+  animation:itemFade 0.6s ease 0.8s forwards;
+  transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.btn-login:hover{
+  transform:translateY(-3px) scale(1.01);
+  box-shadow:0 12px 35px rgba(79,70,229,0.4);
+}
+.btn-login:active{ transform:translateY(0) scale(0.98); }
+.btn-login::after{
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);
+  animation:shimmer 3s ease-in-out infinite;
+}
+@keyframes shimmer{ 0%{left:-100%;} 50%{left:100%;} 100%{left:100%;} }
+
+/* Loading state */
+.btn-login.loading{
+  pointer-events:none; opacity:0.85;
+}
+.btn-login.loading::before{
+  content:''; display:inline-block; width:18px; height:18px;
+  border:2px solid rgba(255,255,255,0.3); border-top-color:#fff;
+  border-radius:50%; margin-right:8px;
+  animation:spin 0.6s linear infinite;
+}
+@keyframes spin{ to{transform:rotate(360deg);} }
+
+/* ===== ERROR ===== */
+.error-msg{
+  margin-top:16px; padding:12px 16px;
+  background:rgba(239,68,68,0.06);
+  border:1px solid rgba(239,68,68,0.15);
+  border-radius:12px; text-align:center;
+  color:#dc2626; font-size:14px; font-weight:500;
+  animation:shakeIn 0.5s ease;
+}
+@keyframes shakeIn{
+  0%{ transform:translateX(0); opacity:0; }
+  20%{ transform:translateX(-10px); opacity:1; }
+  40%{ transform:translateX(8px); }
+  60%{ transform:translateX(-5px); }
+  80%{ transform:translateX(3px); }
+  100%{ transform:translateX(0); }
+}
+
+/* ===== FOOTER LINK ===== */
+.card-footer{
+  text-align:center; margin-top:28px;
+  font-size:14px; color:#94a3b8;
+  opacity:0; animation:itemFade 0.6s ease 0.9s forwards;
+}
+.card-footer a{
+  color:#6366f1; text-decoration:none; font-weight:600;
+  transition:all 0.3s;
+  position:relative;
+}
+.card-footer a::after{
+  content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px;
+  background:linear-gradient(90deg,#4f46e5,#06b6d4);
+  transition:width 0.3s ease;
+}
+.card-footer a:hover::after{ width:100%; }
+.card-footer a:hover{ color:#4f46e5; }
+
+/* ===== DIVIDER ===== */
+.divider{
+  display:flex; align-items:center; gap:12px;
+  margin:24px 0; opacity:0; animation:itemFade 0.6s ease 0.75s forwards;
+}
+.divider::before, .divider::after{
+  content:''; flex:1; height:1px; background:#e2e8f0;
+}
+.divider span{ font-size:12px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+</style>
+</head>
+<body>
+
+<div class="bg-anim">
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+</div>
+
+<div class="login-card">
+  <div class="brand">
+    <div class="brand-icon">🏦</div>
+    <h2>Welcome Back</h2>
+    <p>Sign in to your EasyLoan account</p>
+  </div>
+
+  <form method="POST" id="login-form">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" placeholder="Enter your username" required>
+      <span class="input-icon">👤</span>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter your password" required>
+      <span class="input-icon">🔒</span>
+    </div>
+    <button type="submit" class="btn-login" id="btn-login">Sign In →</button>
+    {% if error %}
+    <div class="error-msg" id="login-error">{{error}}</div>
+    {% endif %}
+  </form>
+
+  <div class="divider"><span>or</span></div>
+
+  <div class="card-footer">
+    Don't have an account? <a href="/register/">Create one</a>
+  </div>
+</div>
+
+<script>
+// Loading state on submit
+document.getElementById('login-form').addEventListener('submit', function(){
+  document.getElementById('btn-login').classList.add('loading');
+  document.getElementById('btn-login').textContent = 'Signing in...';
+});
+</script>
+
+</body>
+</html>

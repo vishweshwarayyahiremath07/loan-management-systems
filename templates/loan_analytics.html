@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Analytics — EasyLoan Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:'Outfit',sans-serif; background:#f0f4f8; color:#1e293b; min-height:100vh; overflow-x:hidden; }
+.bg-shapes{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.shape{ position:absolute; border-radius:50%; opacity:0.08; animation:shapeFloat 10s ease-in-out infinite alternate; }
+.shape-1{ width:450px; height:450px; background:linear-gradient(135deg,#6366f1,#818cf8); top:-12%; right:5%; }
+.shape-2{ width:380px; height:380px; background:linear-gradient(135deg,#06b6d4,#22d3ee); bottom:-10%; left:0%; animation-delay:3s; }
+@keyframes shapeFloat{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(40px,-25px) scale(1.1);} }
+@keyframes fadeUp{ 0%{opacity:0;transform:translateY(20px);} 100%{opacity:1;transform:translateY(0);} }
+
+/* Navbar */
+.navbar{
+  position:sticky; top:0; z-index:1000;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:16px 36px;
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(245,158,11,0.08);
+  box-shadow:0 1px 15px rgba(245,158,11,0.04);
+}
+.nav-brand{ font-family:'Inter',sans-serif; font-size:20px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:8px; }
+.nav-badge{ font-size:10px; padding:3px 10px; border-radius:20px; background:rgba(245,158,11,0.12); color:#d97706; font-weight:700; text-transform:uppercase; }
+.nav-links{ display:flex; gap:4px; align-items:center; flex-wrap:wrap; }
+.nav-links a{ color:#64748b; text-decoration:none; font-size:13px; font-weight:500; padding:8px 14px; border-radius:8px; transition:all 0.3s; }
+.nav-links a:hover{ color:#d97706; background:rgba(245,158,11,0.06); }
+.nav-links a.active{ color:#d97706; background:rgba(245,158,11,0.1); font-weight:600; }
+.nav-links a.logout{ color:#ef4444; border:1px solid rgba(239,68,68,0.15); }
+.nav-links a.logout:hover{ background:rgba(239,68,68,0.06); }
+
+.main{ position:relative; z-index:1; max-width:1100px; margin:auto; padding:40px 24px; }
+.page-header{ text-align:center; margin-bottom:36px; animation:fadeUp 0.6s ease-out; }
+.page-header h1{ font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:#0f172a; }
+.page-header p{ color:#94a3b8; font-size:15px; margin-top:6px; }
+
+/* Summary Stats */
+.stats-row{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:16px; margin-bottom:36px;
+}
+.mini-stat{
+  background:rgba(255,255,255,0.8); border:1px solid rgba(99,102,241,0.06);
+  border-radius:16px; padding:22px 20px; text-align:center;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 2px 15px rgba(99,102,241,0.03);
+  animation:fadeUp 0.8s ease-out both;
+  transition:all 0.3s ease;
+}
+.mini-stat:hover{
+  transform:translateY(-4px);
+  box-shadow:0 8px 25px rgba(99,102,241,0.08);
+}
+.mini-stat:nth-child(1){animation-delay:0.1s;} .mini-stat:nth-child(2){animation-delay:0.15s;}
+.mini-stat:nth-child(3){animation-delay:0.2s;} .mini-stat:nth-child(4){animation-delay:0.25s;}
+.mini-stat:nth-child(5){animation-delay:0.3s;} .mini-stat:nth-child(6){animation-delay:0.35s;}
+.mini-stat .label{ font-size:11px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.mini-stat .value{ font-family:'Inter',sans-serif; font-size:24px; font-weight:800; color:#0f172a; }
+.mini-stat.purple .value{ color:#6366f1; }
+.mini-stat.teal .value{ color:#0891b2; }
+.mini-stat.red .value{ color:#dc2626; }
+.mini-stat.gold .value{ color:#d97706; }
+
+/* Chart Cards */
+.charts-grid{
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+.chart-card{
+  background:rgba(255,255,255,0.8); border:1px solid rgba(99,102,241,0.06);
+  border-radius:20px; padding:28px;
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  box-shadow:0 4px 20px rgba(99,102,241,0.04);
+  animation:fadeUp 0.8s ease-out 0.3s both;
+  transition:all 0.4s ease;
+}
+.chart-card:hover{
+  border-color:rgba(99,102,241,0.15);
+  box-shadow:0 12px 40px rgba(99,102,241,0.08);
+}
+.chart-title{
+  font-family:'Inter',sans-serif; font-size:16px; font-weight:700;
+  color:#475569; margin-bottom:20px;
+}
+canvas{ max-height:300px !important; }
+
+@media(max-width:768px){
+  .navbar{padding:14px 20px;} .nav-links a{font-size:12px;padding:6px 10px;}
+  .charts-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="bg-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
+
+<nav class="navbar">
+  <div class="nav-brand">EasyLoan <span class="nav-badge">Admin</span></div>
+  <div class="nav-links">
+    <a href="/admin-dashboard/">Dashboard</a>
+    <a href="/all-loans/">All Loans</a>
+    <a href="/pending-loans/">Pending</a>
+    <a href="/approved-loans/">Approved</a>
+    <a href="/loan-analytics/" class="active">Analytics</a>
+    <a href="/admin-logout/" class="logout">Logout</a>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="page-header">
+    <h1>📊 Loan Analytics Dashboard</h1>
+    <p>Data-driven insights into your loan operations</p>
+  </div>
+
+  <!-- Summary Stats -->
+  <div class="stats-row">
+    <div class="mini-stat purple">
+      <div class="label">Total Users</div>
+      <div class="value">{{data.total_users}}</div>
+    </div>
+    <div class="mini-stat teal">
+      <div class="label">Total Loans</div>
+      <div class="value">{{data.total_loans}}</div>
+    </div>
+    <div class="mini-stat teal">
+      <div class="label">Approved</div>
+      <div class="value">{{data.approved}}</div>
+    </div>
+    <div class="mini-stat red">
+      <div class="label">Rejected</div>
+      <div class="value">{{data.rejected}}</div>
+    </div>
+    <div class="mini-stat gold">
+      <div class="label">Total Amount</div>
+      <div class="value">₹{{data.total_amount}}</div>
+    </div>
+    <div class="mini-stat purple">
+      <div class="label">EMI Paid</div>
+      <div class="value">{{data.total_emi}}</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">📈 Loan Overview</div>
+      <canvas id="loanChart"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🎯 Loan Distribution</div>
+      <canvas id="doughnutChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+// Light theme defaults
+Chart.defaults.color = '#64748b';
+Chart.defaults.borderColor = '#e2e8f0';
+
+var total_loans = {{data.total_loans}};
+var approved = {{data.approved}};
+var rejected = {{data.rejected}};
+var total_emi = {{data.total_emi}};
+
+// Bar Chart
+new Chart(document.getElementById("loanChart"), {
+  type: 'bar',
+  data: {
+    labels: ['Total Loans','Approved','Rejected','EMI Paid'],
+    datasets: [{
+      label: 'Count',
+      data: [total_loans, approved, rejected, total_emi],
+      backgroundColor: [
+        'rgba(99,102,241,0.7)',
+        'rgba(16,185,129,0.7)',
+        'rgba(239,68,68,0.7)',
+        'rgba(245,158,11,0.7)'
+      ],
+      borderColor: [
+        '#6366f1','#10b981','#ef4444','#f59e0b'
+      ],
+      borderWidth: 2,
+      borderRadius: 10,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color:'#f1f5f9' },
+        ticks: { color:'#94a3b8', font:{weight:'600'} }
+      },
+      x: {
+        grid: { display:false },
+        ticks: { color:'#64748b', font:{weight:'600'} }
+      }
+    }
+  }
+});
+
+// Doughnut Chart
+new Chart(document.getElementById("doughnutChart"), {
+  type: 'doughnut',
+  data: {
+    labels: ['Approved','Rejected','Pending'],
+    datasets: [{
+      data: [approved, rejected, total_loans - approved - rejected],
+      backgroundColor: [
+        'rgba(16,185,129,0.8)',
+        'rgba(239,68,68,0.8)',
+        'rgba(245,158,11,0.8)'
+      ],
+      borderColor: ['#10b981','#ef4444','#f59e0b'],
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color:'#64748b',
+          padding: 20,
+          font: { size:13, weight:'600' },
+          usePointStyle: true,
+          pointStyleWidth: 12
+        }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>

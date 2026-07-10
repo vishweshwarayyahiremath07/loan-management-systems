@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loan Details — EasyLoan Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:'Outfit',sans-serif; background:#f0f4f8; color:#1e293b; min-height:100vh; overflow-x:hidden; }
+.bg-shapes{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.shape{ position:absolute; border-radius:50%; opacity:0.08; animation:shapeFloat 10s ease-in-out infinite alternate; }
+.shape-1{ width:400px; height:400px; background:linear-gradient(135deg,#6366f1,#818cf8); top:-12%; right:5%; }
+.shape-2{ width:350px; height:350px; background:linear-gradient(135deg,#06b6d4,#22d3ee); bottom:-10%; left:0%; animation-delay:3s; }
+@keyframes shapeFloat{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(40px,-25px) scale(1.1);} }
+@keyframes fadeUp{ 0%{opacity:0;transform:translateY(20px);} 100%{opacity:1;transform:translateY(0);} }
+
+.main{ position:relative; z-index:1; max-width:700px; margin:auto; padding:50px 24px; }
+.page-header{ text-align:center; margin-bottom:36px; animation:fadeUp 0.6s ease-out; }
+.page-header h1{ font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:#0f172a; }
+
+.detail-card{
+  background:rgba(255,255,255,0.8); border:1px solid rgba(99,102,241,0.08);
+  border-radius:20px; padding:32px 30px; margin-bottom:24px;
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  box-shadow:0 4px 30px rgba(99,102,241,0.05);
+  animation:fadeUp 0.8s ease-out both;
+}
+.detail-card:nth-child(2){ animation-delay:0.15s; }
+.detail-card:nth-child(3){ animation-delay:0.3s; }
+.detail-card:hover{
+  border-color:rgba(99,102,241,0.18); box-shadow:0 12px 40px rgba(99,102,241,0.08);
+  transition:all 0.4s ease;
+}
+
+.card-title{
+  font-family:'Inter',sans-serif; font-size:18px; font-weight:700; color:#0f172a;
+  margin-bottom:20px; padding-bottom:12px;
+  border-bottom:1px solid #e2e8f0;
+  display:flex; align-items:center; gap:10px;
+}
+
+.info-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.info-item{
+  background:rgba(248,250,252,0.8); border:1px solid #e2e8f0;
+  border-radius:12px; padding:14px 18px;
+}
+.info-label{
+  font-size:11px; font-weight:600; color:#94a3b8;
+  text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;
+}
+.info-value{ font-size:15px; font-weight:500; color:#0f172a; }
+
+.badge{
+  display:inline-block; padding:5px 14px; border-radius:20px;
+  font-size:12px; font-weight:700; text-transform:uppercase;
+}
+.badge-pending{ background:rgba(245,158,11,0.1); color:#d97706; border:1px solid rgba(245,158,11,0.2); }
+.badge-approved{ background:rgba(16,185,129,0.1); color:#059669; border:1px solid rgba(16,185,129,0.2); }
+.badge-rejected{ background:rgba(239,68,68,0.08); color:#dc2626; border:1px solid rgba(239,68,68,0.15); }
+
+.back-link{ display:block; text-align:center; margin-top:28px; color:#94a3b8; font-size:14px; text-decoration:none; }
+.back-link span{ color:#6366f1; font-weight:600; }
+
+@media(max-width:600px){ .info-grid{grid-template-columns:1fr;} .detail-card{padding:24px 20px;} }
+</style>
+</head>
+<body>
+<div class="bg-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
+
+<div class="main">
+  <div class="page-header"><h1>📋 Loan Details</h1></div>
+
+  <!-- Loan Info -->
+  <div class="detail-card">
+    <div class="card-title">📄 Loan Information</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">Applicant</div><div class="info-value">{{loan.user.full_name}}</div></div>
+      <div class="info-item"><div class="info-label">Loan Type</div><div class="info-value">{{loan.loan_type}}</div></div>
+      <div class="info-item"><div class="info-label">Amount</div><div class="info-value">₹ {{loan.loan_amount|floatformat:0}}</div></div>
+      <div class="info-item"><div class="info-label">Duration</div><div class="info-value">{{loan.loan_duration}} months</div></div>
+      <div class="info-item" style="grid-column:1/-1;">
+        <div class="info-label">Status</div>
+        <div class="info-value">
+          <span class="badge {% if loan.status == 'Pending' %}badge-pending{% elif loan.status == 'Approved' %}badge-approved{% else %}badge-rejected{% endif %}">{{loan.status}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if approval %}
+  <!-- Approval Details -->
+  <div class="detail-card">
+    <div class="card-title">✅ Approval Details</div>
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">Approved Amount</div><div class="info-value">₹ {{approval.approved_amount|floatformat:0}}</div></div>
+      <div class="info-item"><div class="info-label">Interest Rate</div><div class="info-value">{{approval.interest_rate}}%</div></div>
+      <div class="info-item"><div class="info-label">Monthly EMI</div><div class="info-value" style="color:#059669;font-weight:700;">₹ {{approval.emi}}</div></div>
+      <div class="info-item"><div class="info-label">Duration</div><div class="info-value">{{approval.duration}} months</div></div>
+      <div class="info-item" style="grid-column:1/-1;"><div class="info-label">Approval Date</div><div class="info-value">{{approval.approval_date|date:"d M Y, H:i"}}</div></div>
+    </div>
+  </div>
+  {% endif %}
+
+  <a href="/dashboard/" class="back-link">← Back to <span>Dashboard</span></a>
+</div>
+</body>
+</html>

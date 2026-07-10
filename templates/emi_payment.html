@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMI Payment — EasyLoan Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:'Outfit',sans-serif; background:#f0f4f8; color:#1e293b; min-height:100vh; overflow-x:hidden; }
+.bg-shapes{ position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.shape{ position:absolute; border-radius:50%; opacity:0.08; animation:shapeFloat 10s ease-in-out infinite alternate; }
+.shape-1{ width:400px; height:400px; background:linear-gradient(135deg,#6366f1,#818cf8); top:-12%; left:-5%; }
+.shape-2{ width:350px; height:350px; background:linear-gradient(135deg,#06b6d4,#22d3ee); bottom:-10%; right:0%; animation-delay:3s; }
+@keyframes shapeFloat{ 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(40px,-25px) scale(1.1);} }
+@keyframes fadeUp{ 0%{opacity:0;transform:translateY(20px);} 100%{opacity:1;transform:translateY(0);} }
+
+.main{ position:relative; z-index:1; max-width:900px; margin:auto; padding:50px 24px; }
+.page-header{ text-align:center; margin-bottom:40px; animation:fadeUp 0.6s ease-out; }
+.page-header h1{ font-family:'Inter',sans-serif; font-size:32px; font-weight:800; color:#0f172a; }
+.page-header p{ color:#94a3b8; font-size:15px; margin-top:6px; }
+
+.table-card{
+  background:rgba(255,255,255,0.8); border:1px solid rgba(99,102,241,0.08);
+  border-radius:20px; overflow:hidden;
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  box-shadow:0 4px 30px rgba(99,102,241,0.05);
+  animation:fadeUp 0.8s ease-out 0.2s both;
+}
+table{ width:100%; border-collapse:collapse; }
+thead th{
+  padding:16px 20px; text-align:left; font-size:12px; font-weight:700;
+  color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;
+  background:rgba(248,250,252,0.8); border-bottom:1px solid #e2e8f0;
+}
+tbody tr{ transition:all 0.3s ease; animation:rowSlide 0.5s ease-out both; }
+tbody tr:nth-child(1){animation-delay:0.1s;} tbody tr:nth-child(2){animation-delay:0.15s;}
+tbody tr:nth-child(3){animation-delay:0.2s;} tbody tr:nth-child(4){animation-delay:0.25s;}
+@keyframes rowSlide{ 0%{opacity:0;transform:translateX(-20px);} 100%{opacity:1;transform:translateX(0);} }
+tbody tr:hover{ background:rgba(99,102,241,0.04); }
+tbody td{ padding:16px 20px; font-size:14px; border-bottom:1px solid #f1f5f9; color:#475569; }
+
+.btn-pay{
+  display:inline-block; padding:8px 20px; border-radius:10px;
+  background:linear-gradient(135deg,#4f46e5,#6366f1);
+  color:#fff; font-size:13px; font-weight:700;
+  text-decoration:none; transition:all 0.3s ease;
+  box-shadow:0 2px 10px rgba(79,70,229,0.2);
+}
+.btn-pay:hover{
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(79,70,229,0.3);
+}
+
+.back-link{ display:block; text-align:center; margin-top:28px; color:#94a3b8; font-size:14px; text-decoration:none; }
+.back-link span{ color:#6366f1; font-weight:600; }
+
+@media(max-width:768px){ .table-card{overflow-x:auto;} table{min-width:500px;} }
+</style>
+</head>
+<body>
+<div class="bg-shapes"><div class="shape shape-1"></div><div class="shape shape-2"></div></div>
+
+<div class="main">
+  <div class="page-header">
+    <h1>💰 EMI Payment</h1>
+    <p>Select a loan to make your monthly EMI payment</p>
+  </div>
+
+  <div class="table-card">
+    <table id="emi-payment-table">
+      <thead><tr><th>Loan Amount</th><th>EMI</th><th>Duration</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for loan in loans %}
+        <tr>
+          <td><strong>₹ {{loan.approved_amount|floatformat:0}}</strong></td>
+          <td>₹ {{loan.emi}}</td>
+          <td>{{loan.duration}} months</td>
+          <td><a href="/pay-emi/{{loan.id}}" class="btn-pay">Pay EMI →</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center;padding:50px;color:#94a3b8;">No approved loans found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <a href="/dashboard/" class="back-link">← Back to <span>Dashboard</span></a>
+</div>
+</body>
+</html>
